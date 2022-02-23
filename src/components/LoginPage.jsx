@@ -1,21 +1,44 @@
 import { LockClosedIcon } from "@heroicons/react/solid";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+
+import { useAuth } from "@hooks/useAuth";
+import { useRouter } from "next/router";
 
 export default function LoginPage() {
+  const router = useRouter();
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const auth = useAuth();
+
+  const [errorLogin, setErrorLogin] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
-    console.log(email, password);
+    setErrorLogin(null);
+    auth
+      .signIn(email, password)
+      .then(() => router.push("/dashboard"))
+      .catch((e) => {
+        e.response.status === 401
+          ? setErrorLogin("User or password incorrect")
+          : setErrorLogin("Ops something went wrong");
+      });
   };
 
   return (
     <>
       <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
+          {errorLogin && (
+            <div
+              className="p-3 mb-3 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+              role="alert"
+            >
+              <span className="font-medium">Error!</span> {errorLogin}
+            </div>
+          )}
           <div>
             <img
               className="mx-auto h-12 w-auto"

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { CheckIcon, XCircleIcon } from "@heroicons/react/solid";
 import Modal from "@common/Modal";
 import { useEffect, useState } from "react";
@@ -7,6 +8,7 @@ import { endPoints } from "@services/api";
 import { useAlert } from "@hooks/useAlert";
 import Alert from "@common/Alert";
 import { deleteProduct } from "@services/api/products";
+import Link from "next/link";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -131,12 +133,11 @@ const Products = () => {
                         {product.id}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a
-                          href="/edit"
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          Edit
-                        </a>
+                        <Link href={`/dashboard/edit/${product.id}`}>
+                          <a className="text-indigo-600 hover:text-indigo-900">
+                            Edit
+                          </a>
+                        </Link>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <XCircleIcon

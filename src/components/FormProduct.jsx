@@ -1,3 +1,4 @@
+import { addProduct } from "@services/api/products";
 import { useRef } from "react";
 
 const FormProduct = () => {
@@ -13,7 +14,7 @@ const FormProduct = () => {
       categoryId: parseInt(formData.get("category")),
       images: [formData.get("images").name],
     };
-    console.log(data);
+    addProduct(data).then((res) => console.log(res));
   };
   return (
     <form ref={formRef} onSubmit={handleSubmit}>

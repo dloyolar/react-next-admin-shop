@@ -1,18 +1,42 @@
+import { Chart } from "@common/Chart";
 import { useFetch } from "@hooks/useFetch";
 import { endPoints } from "@services/api";
 
-const PRODUCT_LIMIT = 10;
+const PRODUCT_LIMIT = 30;
 const PRODUCT_OFFSET = 0;
 
 export default function Dashboard() {
   const products = useFetch(
     endPoints.products.getProducts(PRODUCT_LIMIT, PRODUCT_OFFSET)
   );
-  console.log(products);
+
+  const categoryCount = products?.map((product) => product.category.name);
+
+  const countOccurences = (array) =>
+    array.reduce((prev, curr) => ((prev[curr] = ++prev[curr] || 1), prev), {});
+
+  const data = {
+    datasets: [
+      {
+        label: "Categories",
+        data: countOccurences(categoryCount),
+        borderWidth: 2,
+        backgroundColor: [
+          "#f87979",
+          "#f8e979",
+          "#79f879",
+          "#79f8e9",
+          "#7979f8",
+        ],
+      },
+    ],
+  };
+
   return (
     <>
+      <Chart className="mb-8 mt-2" chartData={data} />
       <div className="flex flex-col">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
               <table className="min-w-full divide-y divide-gray-200">

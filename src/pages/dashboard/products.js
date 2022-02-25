@@ -1,14 +1,33 @@
 import { CheckIcon } from "@heroicons/react/solid";
 import Modal from "@common/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormProduct from "@components/FormProduct";
+import axios from "axios";
+import { endPoints } from "@services/api";
+import { useAlert } from "@hooks/useAlert";
+import Alert from "@common/Alert";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);
+  const { alert, setAlert, toggleAlert } = useAlert();
+
+  useEffect(() => {
+    async function getProducts() {
+      const response = await axios.get(endPoints.products.allProducts);
+      setProducts(response.data);
+    }
+
+    try {
+      getProducts();
+    } catch (error) {
+      console.error(error);
+    }
+  }, [alert]);
 
   return (
     <>
+      <Alert alert={alert} handleClose={toggleAlert} />
       <div className="lg:flex lg:items-center lg:justify-between mb-8">
         <div className="flex-1 min-w-0">
           <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
@@ -107,6 +126,14 @@ const Products = () => {
                           Edit
                         </a>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a
+                          href="/edit"
+                          className="text-indigo-600 hover:text-indigo-900"
+                        >
+                          Delete
+                        </a>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -116,7 +143,7 @@ const Products = () => {
         </div>
       </div>
       <Modal open={open} setOpen={setOpen}>
-        <FormProduct />
+        <FormProduct setOpen={setOpen} setAlert={setAlert} />
       </Modal>
     </>
   );
